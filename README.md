@@ -1,49 +1,155 @@
-# Test Coding Assignment
+# Email Sender App
 
-# Assignment:
-Develop a simple web app allowing users to send emails. The app should have the following features:  
-## 1. Sidebar
-1. The main page should have a sidebar with a list of emails (Apple Mail style)
-2. When selecting an email from the sidebar, the selected email should be displayed on the right side of the screen
+A modern email application built with Next.js frontend and Fastify backend, featuring a beautiful Apple Mail-style interface.
 
-## 2. Search bar
-1. The sidebar should contain a search bar at the top
-2. When typing text in the search bar, the list of emails in the sidebar should be filtered based on the search text
-   * We should do the filtering on the backend
-   * We should debounce the requests to the backend (i.e. wait for 500ms after the user stops typing before sending the request)
-   * The search should return results where either the `to`, `cc`, `bcc`, `subject`, or `subject` fields contain the search text
+## 🚀 Features
 
-## 3. Sending emails
-The main page should have a button to compose a new email (placed at the bottom right corner of the screen). The following fields should be present in the compose email form:
-   * To
-   * CC
-   * BCC
-   * Subject
-   * Body
+### Frontend (Next.js + Material-UI)
+- **Apple Mail-style sidebar** with email list
+- **Real-time search** with 500ms debounced backend filtering
+- **Compose email functionality** with all required fields (To, CC, BCC, Subject, Body)
+- **Responsive design** with modern Material-UI components
+- **Environment-based configuration** for easy deployment
 
+### Backend (Fastify + SQLite)
+- **RESTful API** with proper error handling
+- **SQLite database** with Knex.js ORM
+- **Search functionality** across all email fields
+- **CORS support** for frontend integration
+- **Database migrations** and seed data
 
-# Notes:
-1. No need to actually send the email - it's enough to save it in the database
-2. Do not spend more than 1h on this assignment, just do as much as you can in that time
-3. Please remove the .next folder before sending the task
-4. Please remove the dev.sqlite3 folder before sending the task
-5. Please remove the node_modules folders before sending the task
-6. Please remove any other ignored files before sending the task
+## 📋 Requirements
 
+- Node.js 16+ 
+- Yarn or npm
+- Git
 
-# Structure
-This is a monorepo. It has two folders:  
-1. `frontend`: This is the frontend of the application. It is built using Next.js.  
-2. `backend`: This is the backend of the application. It is built using Fastify.
+## 🛠️ Installation & Setup
 
-# Setup
-1. `cd frontend` - Go to the frontend folder
-2. `yarn install` - Install the dependencies
-3. `yarn dev` - Start the development server (http://localhost:3000)
-4. `cd ../backend` - Go to the backend folder
-5. `yarn install` - Install the dependencies
-6. `yarn migrate` - Run the knex db migrations
-7. `yarn dev` - Start the development server (http://localhost:3001)
+### 1. Clone the repository
+```bash
+git clone https://github.com/AregawiF/email-sender-app.git
+cd email-sender-app
+```
 
-# Design
-1. [MUI](https://mui.com/) is installed and used for the design of the frontend.
+### 2. Backend Setup
+```bash
+cd backend
+yarn install
+yarn migrate
+yarn dev
+```
+The backend will start on `http://localhost:3001`
+
+### 3. Frontend Setup
+```bash
+cd frontend
+yarn install
+yarn dev
+```
+The frontend will start on `http://localhost:3000`
+
+## 🌐 API Endpoints
+
+### Base URL: `http://localhost:3001/api`
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/emails` | Get all emails |
+| GET | `/emails/search?q=query` | Search emails |
+| GET | `/emails/:id` | Get email by ID |
+| POST | `/emails` | Create new email |
+| GET | `/ping` | Health check |
+
+### Example API Usage
+
+```bash
+# Get all emails
+curl http://localhost:3001/api/emails
+
+# Search emails
+curl http://localhost:3001/api/emails/search?q=project
+
+# Create new email
+curl -X POST http://localhost:3001/api/emails \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "recipient@example.com",
+    "subject": "Test Email",
+    "body": "This is a test email"
+  }'
+```
+
+## 🗄️ Database Schema
+
+### Emails Table
+```sql
+CREATE TABLE emails (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  to TEXT,
+  cc TEXT,
+  bcc TEXT,
+  subject STRING,
+  body TEXT,
+  created_at DATETIME,
+  updated_at DATETIME
+);
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create `.env.local` in the frontend directory:
+```env
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3001/api
+```
+
+For production, update the URL to your backend server.
+
+## 📁 Project Structure
+
+```
+email-sender-app/
+├── backend/
+│   ├── src/
+│   │   ├── db/
+│   │   │   └── index.js          # Database operations
+│   │   └── routes/
+│   │       ├── index.js          # Main routes
+│   │       └── emails.js         # Email endpoints
+│   ├── migrations/               # Database migrations
+│   ├── index.js                  # Fastify server
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── index.js          # Main email interface
+│   │   │   ├── _app.js           # App wrapper
+│   │   │   └── _document.js      # Document wrapper
+│   │   ├── config/
+│   │   │   └── index.js          # Configuration
+│   │   └── styles/
+│   │       └── globals.css       # Global styles
+│   └── package.json
+└── README.md
+```
+
+## 🎨 UI Features
+
+- **Sidebar Layout**: Clean email list with sender, subject, and date
+- **Search Bar**: Real-time filtering with debounced backend requests
+- **Email Composition**: Full-featured compose dialog with validation
+- **Responsive Design**: Works on desktop and mobile devices
+- **Loading States**: Proper loading indicators and error handling
+
+## 🚀 Deployment
+
+### Frontend
+1. Set environment variable `NEXT_PUBLIC_BACKEND_URL` to your backend URL
+2. Deploy to Vercel or Netlify
+
+### Backend 
+1. Set up SQLite or switch to PostgreSQL
+2. Update database configuration
+3. Deploy to your preferred platform
